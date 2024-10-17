@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import NextBreadcrumb from '@/app/components/NextBreadcrumb';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,6 +29,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      <NextBreadcrumb
+          homeElement={'Home'}
+          separator={<span> | </span>}
+          activeClasses='text-amber-500'
+          containerClasses='flex py-5 bg-gradient-to-r from-purple-600 to-blue-600'
+          listClasses='hover:underline mx-2 font-bold'
+          capitalizeLinks
+      />
         {children}
       </body>
     </html>

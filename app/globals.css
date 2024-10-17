@@ -25,3 +25,29 @@ body {
     text-wrap: balance;
   }
 }
+
+
+@keyframes showHamster {
+  0% {background-position-y: 300%;}
+  100% {background-position-y: center;}
+}
+
+@keyframes hideHamster {
+  0% {background-position-y: center;}
+  100% {background-position-y: 300%;}
+}
+
+.image-container {
+  width: 200px;
+  height: 200px;
+  background-image: url('./images/regular.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #1d1e21;
+  animation: hideHamster 1s normal forwards ease-in-out;
+}
+
+.image-container.show {
+  animation: showHamster 1s normal forwards ease-in-out;
+}
+
