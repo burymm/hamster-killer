@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 
-interface CellProps {
+interface CellProps extends React.HTMLAttributes<HTMLDivElement> {
     visible: boolean;
-    className: string;
 }
 
 const Cell = ({visible = false, className}: CellProps) => {
