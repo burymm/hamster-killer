@@ -10,6 +10,7 @@ export default function Home() {
     const [state, setState] = useState({
         gameInProgress: false,
         timer: 0,
+        mapCopy: [],
         map: [ ...Array(MAP_SIZE) ].map(() => {
             return [
                 ...Array(MAP_SIZE),
@@ -19,6 +20,7 @@ export default function Home() {
 
     const currentTimer = useRef();
     useEffect(() => {
+        console.log('state=', state);
         return () => clearInterval(currentTimer.current);
     }, []);
 
@@ -70,19 +72,10 @@ export default function Home() {
                 }),
             ]
         });
-
-        console.log('new map', newMap);
-
-        // setState({
-        //     ...state,
-        //     map: newMap,
-        // });
-
-
-        console.log(state.gameInProgress, state);
-        // state.map[rowIndex][cellIndex].visible = !state.map[rowIndex][cellIndex].visible;
-
-        return newMap;
+        setState((prevState) => ({
+            ...prevState,
+            map: [...newMap]
+        }));
     }
 
 
@@ -93,10 +86,11 @@ export default function Home() {
             </button>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     onClick={ startGameClick }> {state.gameInProgress ? 'Reset' : 'Start game'}</button>
+                    {JSON.stringify(state.map)}
             <div className="playground grid grid-cols-4 gap-4">
                 { state.map.map((row, rowIndex) => {
                     return <div key={ rowIndex }>
-                        { state.map.map((cell, cellIndex) => <Cell key={ `${ rowIndex }_${ cellIndex }` }/>) }
+                        { row.map((cell, cellIndex) => <>{JSON.stringify(cell)}<Cell visible={cell.visible} key={ `${ rowIndex }_${ cellIndex }` }/></>) }
                     </div>;
                 }) }
             </div>

@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const Cell = () => {
+interface CellProps {
+    visible: boolean;
+}
 
-    const [isShow, setIsShow] = useState(false);
+const Cell = ({visible = false}: CellProps) => {
+
+    const [isShow, setIsShow] = useState(visible);
+
+    useEffect(() => {
+        setIsShow(visible);
+    }, [visible])
 
     function handleClick() {
         setIsShow(!isShow)
@@ -13,7 +21,7 @@ const Cell = () => {
             <div className={`${isShow ? 'show' : ''} image-container`}>
 
             </div>
-            Cell={isShow.toString()}=
+            Cell={isShow?.toString()}=
         </div>
     );
 }
