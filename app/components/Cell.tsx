@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 
 interface CellProps {
     visible: boolean;
+    className: string;
 }
 
-const Cell = ({visible = false}: CellProps) => {
+const Cell = ({visible = false, className}: CellProps) => {
 
     const [isShow, setIsShow] = useState(visible);
 
@@ -17,11 +18,10 @@ const Cell = ({visible = false}: CellProps) => {
     }
 
     return (
-        <div onClick={handleClick}>
+        <div className={className} onClick={handleClick}>
             <div className={`${isShow ? 'show' : ''} image-container`}>
 
             </div>
-            Cell={isShow?.toString()}=
         </div>
     );
 }

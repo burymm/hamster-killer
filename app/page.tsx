@@ -18,14 +18,13 @@ export default function Home() {
         })
     });
 
-    const currentTimer = useRef();
+    let currentTimer: number;
     useEffect(() => {
-        console.log('state=', state);
-        return () => clearInterval(currentTimer.current);
+        return () => clearInterval(currentTimer);
     }, []);
 
     const startTimer = () => {
-        currentTimer.current = window.setInterval(() => {
+        currentTimer = window.setInterval(() => {
             tick();
             // const newMap = tick();
             // setState({
@@ -36,7 +35,7 @@ export default function Home() {
     };
 
     const stopTimer = () => {
-        clearInterval(currentTimer.current);
+        clearInterval(currentTimer);
     };
 
     const router = useRouter();
@@ -61,7 +60,6 @@ export default function Home() {
         rowIndexRnd = (rowIndexRnd < 0) ? 0 : rowIndexRnd;
         let cellIndexRnd = Math.abs(Math.round(Math.random() * MAP_SIZE - 1));
         cellIndexRnd = cellIndexRnd < 0 ? 0 : cellIndexRnd;
-        console.log(rowIndexRnd, cellIndexRnd);
         const newMap = state.map.map((row, rowIndex) => {
             return [
                 ...row.map((cell, cellIndex) => {
@@ -86,11 +84,10 @@ export default function Home() {
             </button>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     onClick={ startGameClick }> {state.gameInProgress ? 'Reset' : 'Start game'}</button>
-                    {JSON.stringify(state.map)}
             <div className="playground grid grid-cols-4 gap-4">
                 { state.map.map((row, rowIndex) => {
                     return <div key={ rowIndex }>
-                        { row.map((cell, cellIndex) => <>{JSON.stringify(cell)}<Cell visible={cell.visible} key={ `${ rowIndex }_${ cellIndex }` }/></>) }
+                        { row.map((cell, cellIndex) => <Cell className="mb-5" visible={cell.visible} key={ `${ rowIndex }_${ cellIndex }` }/>) }
                     </div>;
                 }) }
             </div>
