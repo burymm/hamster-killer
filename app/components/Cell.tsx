@@ -19,7 +19,7 @@ const Cell = ({visible = false, className}: CellProps) => {
 
     return (
         <div className={className} onClick={handleClick}>
-            <div className={`${isShow ? 'show' : ''} image-container`}>
+            <div className={`${isShow ? 'show' : ''} image-container bg-gray-500 hover:bg-gray-300 cursor-crosshair`}>
 
             </div>
         </div>

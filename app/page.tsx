@@ -78,12 +78,12 @@ export default function Home() {
             <button type="button" className="mb-8 mr-5" onClick={ () => router.push('/dashboard') }>
                 Dashboard
             </button>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
                     onClick={ startGameClick }> {state.gameInProgress ? 'Reset' : 'Start game'}</button>
             <div className="playground grid grid-cols-4 gap-4">
                 { state.map.map((row, rowIndex) => {
-                    return <div key={ rowIndex }>
-                        { row.map((cell, cellIndex) => <Cell className="mb-3" visible={cell.visible} key={ `${ rowIndex }_${ cellIndex }` }/>) }
+                    return <div key={ rowIndex } className="">
+                        { row.map((cell, cellIndex) => <Cell className="mb-4" visible={cell.visible} key={ `${ rowIndex }_${ cellIndex }` }/>) }
                     </div>;
                 }) }
             </div>
