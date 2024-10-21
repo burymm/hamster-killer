@@ -18,24 +18,19 @@ export default function Home() {
         })
     });
 
-    let currentTimer: number;
+    const currentTimer = useRef();
     useEffect(() => {
-        return () => clearInterval(currentTimer);
+        return () => clearInterval(currentTimer.current);
     }, []);
 
     const startTimer = () => {
-        currentTimer = window.setInterval(() => {
+        currentTimer.current = window.setInterval(() => {
             tick();
-            // const newMap = tick();
-            // setState({
-            //     ...state,
-            //     map: newMap,
-            // })
         }, 1000);
     };
 
     const stopTimer = () => {
-        clearInterval(currentTimer);
+        clearInterval(currentTimer.current);
     };
 
     const router = useRouter();
@@ -60,6 +55,7 @@ export default function Home() {
         rowIndexRnd = (rowIndexRnd < 0) ? 0 : rowIndexRnd;
         let cellIndexRnd = Math.abs(Math.round(Math.random() * MAP_SIZE - 1));
         cellIndexRnd = cellIndexRnd < 0 ? 0 : cellIndexRnd;
+        console.log(rowIndexRnd, cellIndexRnd);
         const newMap = state.map.map((row, rowIndex) => {
             return [
                 ...row.map((cell, cellIndex) => {
@@ -87,7 +83,7 @@ export default function Home() {
             <div className="playground grid grid-cols-4 gap-4">
                 { state.map.map((row, rowIndex) => {
                     return <div key={ rowIndex }>
-                        { row.map((cell, cellIndex) => <Cell className="mb-5" visible={cell.visible} key={ `${ rowIndex }_${ cellIndex }` }/>) }
+                        { row.map((cell, cellIndex) => <Cell className="mb-3" visible={cell.visible} key={ `${ rowIndex }_${ cellIndex }` }/>) }
                     </div>;
                 }) }
             </div>
