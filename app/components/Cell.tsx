@@ -1,19 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const Cell = () => {
+interface CellProps extends React.HTMLAttributes<HTMLDivElement> {
+    visible: boolean;
+}
 
-    const [isShow, setIsShow] = useState(false);
+const Cell = ({visible = false, className}: CellProps) => {
+
+    const [isShow, setIsShow] = useState(visible);
+
+    useEffect(() => {
+        setIsShow(visible);
+    }, [visible])
 
     function handleClick() {
         setIsShow(!isShow)
     }
 
     return (
-        <div onClick={handleClick}>
-            <div className={`${isShow ? 'show' : ''} image-container`}>
+        <div className={className} onClick={handleClick}>
+            <div className={`${isShow ? 'show' : ''} image-container bg-gray-500 hover:bg-gray-300 cursor-crosshair`}>
 
             </div>
-            Cell={isShow.toString()}=
         </div>
     );
 }

@@ -10,57 +10,29 @@ export default function Home() {
     const [state, setState] = useState({
         gameInProgress: false,
         timer: 0,
-        map: [ ...Array(MAP_SIZE) ].map(() => {
-            return [
-                ...Array(MAP_SIZE),
-            ].map(() => ({visible: false}))
-        })
+        map: [ ...Array(MAP_SIZE) ].map(() => [...Array(MAP_SIZE)].map(() => ({visible: false}))) // Generate game field
     });
-
     const currentTimer = useRef();
+    const router = useRouter();
+
     useEffect(() => {
-        return () => clearInterval(currentTimer.current);
+        return () => clearInterval(currentTimer.current); // Clear interval on destroy
     }, []);
 
     const startTimer = () => {
-        currentTimer.current = window.setInterval(() => {
-            tick();
-            // const newMap = tick();
-            // setState({
-            //     ...state,
-            //     map: newMap,
-            // })
-        }, 1000);
+        currentTimer.current = window.setInterval(tick, 1000);
     };
 
     const stopTimer = () => {
         clearInterval(currentTimer.current);
     };
 
-    const router = useRouter();
-
-    function startGameClick() {
-        setState({
-            ...state,
-            gameInProgress: !state.gameInProgress,
-        });
-        if (state.gameInProgress) {
-            console.log('stop game', state.gameInProgress)
-            stopTimer();
-        } else {
-            console.log('start game', state.gameInProgress)
-            startTimer();
-        }
-    }
-
-    function tick() {
-        console.log('game tick');
+    const getUpdatedMap = () => {
         let rowIndexRnd = Math.abs(Math.round(Math.random() * MAP_SIZE - 1));
         rowIndexRnd = (rowIndexRnd < 0) ? 0 : rowIndexRnd;
         let cellIndexRnd = Math.abs(Math.round(Math.random() * MAP_SIZE - 1));
         cellIndexRnd = cellIndexRnd < 0 ? 0 : cellIndexRnd;
-        console.log(rowIndexRnd, cellIndexRnd);
-        const newMap = state.map.map((row, rowIndex) => {
+        return state.map.map((row, rowIndex) => {
             return [
                 ...row.map((cell, cellIndex) => {
                     return {
@@ -70,20 +42,29 @@ export default function Home() {
                 }),
             ]
         });
-
-        console.log('new map', newMap);
-
-        // setState({
-        //     ...state,
-        //     map: newMap,
-        // });
-
-
-        console.log(state.gameInProgress, state);
-        // state.map[rowIndex][cellIndex].visible = !state.map[rowIndex][cellIndex].visible;
-
-        return newMap;
     }
+
+    function startGameClick() {
+        setState({
+            ...state,
+            gameInProgress: !state.gameInProgress,
+        });
+        if (state.gameInProgress) {
+            stopTimer();
+        } else {
+            startTimer();
+        }
+    }
+
+    function tick() {
+        const newMap = getUpdatedMap();
+        setState((prevState) => ({
+            ...prevState,
+            map: [...newMap]
+        }));
+    }
+
+    const renderCell = (visible: boolean, key: string) => <Cell className="mb-4" visible={visible} key={key}/>;
 
 
     return (
@@ -91,12 +72,12 @@ export default function Home() {
             <button type="button" className="mb-8 mr-5" onClick={ () => router.push('/dashboard') }>
                 Dashboard
             </button>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
                     onClick={ startGameClick }> {state.gameInProgress ? 'Reset' : 'Start game'}</button>
             <div className="playground grid grid-cols-4 gap-4">
                 { state.map.map((row, rowIndex) => {
                     return <div key={ rowIndex }>
-                        { state.map.map((cell, cellIndex) => <Cell key={ `${ rowIndex }_${ cellIndex }` }/>) }
+                        { row.map((cell, cellIndex) => renderCell(cell.visible, `${rowIndex}_${cellIndex}`))}
                     </div>;
                 }) }
             </div>
