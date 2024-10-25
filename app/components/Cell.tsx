@@ -4,21 +4,23 @@ interface CellProps extends React.HTMLAttributes<HTMLDivElement> {
     visible: boolean;
 }
 
-const Cell = ({visible = false, className}: CellProps) => {
+const Cell = ({visible = false, className, onHamsterClick }: CellProps) => {
 
     const [isShow, setIsShow] = useState(visible);
 
     useEffect(() => {
         setIsShow(visible);
-    }, [visible])
+    }, [visible]);
 
-    function handleClick() {
-        setIsShow(!isShow)
-    }
+    const handleHamsterClick = () => {
+        onHamsterClick(isShow);
+    };
 
     return (
-        <div className={className} onClick={handleClick}>
-            <div className={`${isShow ? 'show' : ''} image-container bg-gray-500 hover:bg-gray-300 cursor-crosshair`}>
+        <div className={className}>
+            <div className={`${isShow ? 'show' : ''} image-container bg-gray-500 cursor-crosshair`}
+                 onClick={handleHamsterClick}
+            >
 
             </div>
         </div>

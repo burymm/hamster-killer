@@ -5,12 +5,21 @@ import { useEffect, useRef, useState } from 'react';
 
 const MAP_SIZE = 3;
 
+interface CellModel {
+    tickToHide: number;
+    visible: boolean;
+}
+
 export default function Home() {
 
-    const [state, setState] = useState({
+    const [ state, setState ] = useState({
         gameInProgress: false,
         timer: 0,
-        map: [ ...Array(MAP_SIZE) ].map(() => [...Array(MAP_SIZE)].map(() => ({visible: false}))) // Generate game field
+        map: [ ...Array(MAP_SIZE) ].map(() => [ ...Array(MAP_SIZE) ].map(() => ({
+            visible: false,
+            tickToHide: 0
+        } as CellModel))), // Generate game field
+        tickIndex: 0,
     });
     const currentTimer = useRef();
     const router = useRouter();
@@ -35,9 +44,13 @@ export default function Home() {
         return state.map.map((row, rowIndex) => {
             return [
                 ...row.map((cell, cellIndex) => {
+                    const additionalTickLife = rowIndexRnd === rowIndex && cellIndexRnd === cellIndex ? Math.round(Math.random() * 5) + 3 : 0;
+                    const tickToHide = (cell.tickToHide > 0 ? cell.tickToHide - 1 : 0) + additionalTickLife;
+
                     return {
                         ...cell,
-                        visible: rowIndexRnd === rowIndex && cellIndexRnd === cellIndex ? !cell.visible : cell.visible,
+                        visible: tickToHide > 0,
+                        tickToHide,
                     }
                 }),
             ]
@@ -57,14 +70,25 @@ export default function Home() {
     }
 
     function tick() {
+        console.log('tick index', state.tickIndex);
         const newMap = getUpdatedMap();
         setState((prevState) => ({
             ...prevState,
-            map: [...newMap]
+            map: [ ...newMap ],
+            tickIndex: state.tickIndex + 1,
         }));
     }
 
-    const renderCell = (visible: boolean, key: string) => <Cell className="mb-4" visible={visible} key={key}/>;
+    const handleChildClick = (isShow) => {
+        console.log('Клик произошел в дочернем компоненте', isShow);
+    };
+
+    const renderCell = (cellData: CellModel, key: string) => {
+        return <div key={key}>
+            <div>={ cellData.tickToHide }=</div>
+            <Cell onHamsterClick={ handleChildClick } className="mb-4" visible={ cellData.visible } key={ key }/>
+        </div>;
+    }
 
 
     return (
@@ -73,11 +97,11 @@ export default function Home() {
                 Dashboard
             </button>
             <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
-                    onClick={ startGameClick }> {state.gameInProgress ? 'Reset' : 'Start game'}</button>
+                    onClick={ startGameClick }> { state.gameInProgress ? 'Reset' : 'Start game' }</button>
             <div className="playground grid grid-cols-4 gap-4">
                 { state.map.map((row, rowIndex) => {
                     return <div key={ rowIndex }>
-                        { row.map((cell, cellIndex) => renderCell(cell.visible, `${rowIndex}_${cellIndex}`))}
+                        { row.map((cell, cellIndex) => renderCell(cell, `${ rowIndex }_${ cellIndex }`)) }
                     </div>;
                 }) }
             </div>
