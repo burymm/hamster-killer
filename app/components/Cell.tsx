@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 interface CellProps extends React.HTMLAttributes<HTMLDivElement> {
     visible: boolean;
+    onHamsterClick: (visible: boolean) => void;
 }
 
 const Cell = ({visible = false, className, onHamsterClick }: CellProps) => {
@@ -13,6 +14,7 @@ const Cell = ({visible = false, className, onHamsterClick }: CellProps) => {
     }, [visible]);
 
     const handleHamsterClick = () => {
+        setIsShow((prev) => !prev);
         onHamsterClick(isShow);
     };
 
@@ -21,7 +23,6 @@ const Cell = ({visible = false, className, onHamsterClick }: CellProps) => {
             <div className={`${isShow ? 'show' : ''} image-container bg-gray-500 cursor-crosshair`}
                  onClick={handleHamsterClick}
             >
-
             </div>
         </div>
     );

@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import Cell from '@/app/components/Cell';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const MAP_SIZE = 3;
 
@@ -29,7 +29,7 @@ export default function Home() {
     }, []);
 
     const startTimer = () => {
-        currentTimer.current = window.setInterval(tick, 1000);
+        currentTimer.current = window.setInterval(tick, 1000) as any;
     };
 
     const stopTimer = () => {
@@ -79,9 +79,9 @@ export default function Home() {
         }));
     }
 
-    const handleChildClick = (isShow) => {
+    const handleChildClick = useCallback((isShow: boolean) => {
         console.log('Клик произошел в дочернем компоненте', isShow);
-    };
+    }, []);
 
     const renderCell = (cellData: CellModel, key: string) => {
         return <div key={key}>
