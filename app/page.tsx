@@ -36,7 +36,7 @@ export default function Home() {
         clearInterval(currentTimer.current);
     };
 
-    const getUpdatedMap = () => {
+const getUpdatedMap = () => {
         let rowIndexRnd = Math.abs(Math.round(Math.random() * MAP_SIZE - 1));
         rowIndexRnd = (rowIndexRnd < 0) ? 0 : rowIndexRnd;
         let cellIndexRnd = Math.abs(Math.round(Math.random() * MAP_SIZE - 1));
@@ -79,14 +79,23 @@ export default function Home() {
         }));
     }
 
-    const handleChildClick = useCallback((isShow: boolean) => {
-        console.log('Клик произошел в дочернем компоненте', isShow);
-    }, []);
+    const handleChildClick = (rowIndex: number, cellIndex: number) => {
+        const newMap = [...state.map];
+        newMap[rowIndex][cellIndex].visible = !newMap[rowIndex][cellIndex].visible;
+        setState((prevState) => {
+            return {
+            ...prevState,
+            map: newMap,
+            tickIndex: state.tickIndex + 1
+            }
+        });
+        console.log('Клик произошел в дочернем компоненте', state.map[rowIndex][cellIndex].visible);
+    };
 
-    const renderCell = (cellData: CellModel, key: string) => {
-        return <div key={key}>
+    const renderCell = (cellData: CellModel, rowIndex: number, cellIndex: number) => {
+        return <div key={`${ rowIndex }_${ cellIndex }`}>
             <div>={ cellData.tickToHide }=</div>
-            <Cell onHamsterClick={ handleChildClick } className="mb-4" visible={ cellData.visible } key={ key }/>
+            <Cell onHamsterClick={ () => handleChildClick(rowIndex, cellIndex) } className="mb-4" visible={ cellData.visible }/>
         </div>;
     }
 
@@ -101,7 +110,7 @@ export default function Home() {
             <div className="playground grid grid-cols-4 gap-4">
                 { state.map.map((row, rowIndex) => {
                     return <div key={ rowIndex }>
-                        { row.map((cell, cellIndex) => renderCell(cell, `${ rowIndex }_${ cellIndex }`)) }
+                        { row.map((cell, cellIndex) => renderCell(cell, rowIndex, cellIndex)) }
                     </div>;
                 }) }
             </div>
